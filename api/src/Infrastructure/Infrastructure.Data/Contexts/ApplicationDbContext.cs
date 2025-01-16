@@ -1,4 +1,5 @@
-﻿using Homemap.Domain.Core;
+﻿using Homemap.ApplicationCore.Models.Auth;
+using Homemap.Domain.Core;
 using Homemap.Domain.Devices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -15,6 +16,10 @@ namespace Homemap.Infrastructure.Data.Contexts
 
         public required DbSet<Device> Devices { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<UserSession> UserSessions { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // https://learn.microsoft.com/en-us/answers/questions/2101757/applying-migration-fails-with-error
@@ -24,6 +29,25 @@ namespace Homemap.Infrastructure.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<UserSession>(entity =>
+            {
+                entity.ToTable("UserSessions");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.CreatedAt)
+                    .IsRequired();
+
+                entity.Property(e => e.ExpiresAt)
+                    .IsRequired();
+
+                entity.Property(e => e.RefreshToken)
+                    .IsRequired();
+
+                entity.Property(e => e.UserId)
+                    .IsRequired();
+            });
+
             RegisterEntityDerivedTypes<Device, ACDevice>(modelBuilder);
         }
 

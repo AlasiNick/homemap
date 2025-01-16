@@ -1,9 +1,16 @@
-﻿using Homemap.ApplicationCore.Interfaces.Repositories;
+﻿using System.Text;
+using Homemap.ApplicationCore.Interfaces.Repositories;
+using Homemap.ApplicationCore.Interfaces.Services;
+using Homemap.ApplicationCore.Models.Auth;
+using Homemap.ApplicationCore.Services;
 using Homemap.Infrastructure.Data.Contexts;
 using Homemap.Infrastructure.Data.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Homemap.Infrastructure.Data
 {
@@ -28,5 +35,33 @@ namespace Homemap.Infrastructure.Data
             services.AddScoped<IDeviceRepository, DeviceRepository>();
             return services;
         }
+
+        public static IServiceCollection AddAuthenticationServices(
+          this IServiceCollection services,
+          IConfiguration configuration)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = configuration["Jwt:Issuer"],
+                        ValidAudience = configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                    };
+                });
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IAuthService, AuthService>();
+
+            return services;
+        }
+
     }
 }

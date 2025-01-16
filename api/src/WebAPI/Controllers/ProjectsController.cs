@@ -3,6 +3,7 @@ using FluentValidation;
 using Homemap.ApplicationCore.Interfaces.Services;
 using Homemap.ApplicationCore.Models;
 using Homemap.WebAPI.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net.Mime;
@@ -12,6 +13,8 @@ namespace Homemap.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _service;

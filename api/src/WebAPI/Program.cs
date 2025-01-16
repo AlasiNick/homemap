@@ -1,9 +1,13 @@
 using Homemap.ApplicationCore;
 using Homemap.ApplicationCore.Interfaces.Seeders;
+using Homemap.ApplicationCore.Models;
+using Homemap.ApplicationCore.Models.Auth;
 using Homemap.Infrastructure.Data;
 using Homemap.Infrastructure.Data.Contexts;
 using Homemap.Infrastructure.Data.Seeds;
 using Homemap.Infrastructure.Messaging;
+using Homemap.Infrastructure.Messaging.Services;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,7 @@ builder.Services
     .AddMappers()
     .AddValidators()
     .AddApplicationServices()
+    .AddAuthenticationServices(builder.Configuration)
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
     .AddCors(opts => opts.AddPolicy(devCorsPolicy, policy =>
@@ -23,7 +28,8 @@ builder.Services
         policy
             .WithOrigins("http://localhost:3000", "http://localhost:3080")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     }))
     .AddControllers()
     .AddJsonOptions(opts =>
@@ -52,12 +58,16 @@ if (app.Environment.IsDevelopment())
     {
         new ProjectSeeder(context),
         new ReceiverSeeder(context),
-        new DeviceSeeder(context)
+        new DeviceSeeder(context),
+        new UserSeeder(context, new PasswordHasher<User>())
     }.ForEach(async seeder => await seeder.SeedAsync());
 
     // enable cors
     app.UseCors(devCorsPolicy);
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

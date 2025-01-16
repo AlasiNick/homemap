@@ -3,6 +3,7 @@ using FluentValidation;
 using Homemap.ApplicationCore.Interfaces.Services;
 using Homemap.ApplicationCore.Models;
 using Homemap.WebAPI.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -10,6 +11,7 @@ namespace Homemap.WebAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class DevicesController : ControllerBase
 {
     private readonly IDeviceService _service;
