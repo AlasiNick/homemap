@@ -20,6 +20,9 @@ importers:
       nuxt:
         specifier: ^3.13.0
         version: 3.13.2(@parcel/watcher@2.4.1)(@types/node@22.7.4)(eslint@9.11.1(jiti@2.1.0))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.23.0)(terser@5.34.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(webpack-sources@3.2.3)
+      nuxt-vue3-google-signin:
+        specifier: ^0.0.11
+        version: 0.0.11(magicast@0.3.5)(rollup@4.23.0)(vue@3.5.10(typescript@5.6.2))(webpack-sources@3.2.3)
       radix-vue:
         specifier: ^1.9.6
         version: 1.9.6(vue@3.5.10(typescript@5.6.2))
@@ -32,6 +35,9 @@ importers:
       vue-sonner:
         specifier: ^1.3.0
         version: 1.3.0
+      vue3-google-signin:
+        specifier: ^2.0.1
+        version: 2.0.1(vue@3.5.10(typescript@5.6.2))
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -3020,6 +3026,10 @@ packages:
     engines: {node: ^16.10.0 || >=18.0.0}
     hasBin: true
 
+  nuxt-vue3-google-signin@0.0.11:
+    resolution: {integrity: sha512-GLXAGwOXFCaTg+Bvu76qDY5qxbm9S5zxxVKAAFb4f/jaUiCRVesD8NxToQvY9c9Xf83W0W1rYLjfTABF+pmqNA==}
+    engines: {node: '>=16.0.0'}
+
   nuxt@3.13.2:
     resolution: {integrity: sha512-Bjc2qRsipfBhjXsBEJCN+EUAukhdgFv/KoIR5HFB2hZOYRSqXBod3oWQs78k3ja1nlIhAEdBG533898KJxUtJw==}
     engines: {node: ^14.18.0 || >=16.10.0}
@@ -4151,6 +4161,11 @@ packages:
 
   vue-sonner@1.3.0:
     resolution: {integrity: sha512-jAodBy4Mri8rQjVZGQAPs4ZYymc1ywPiwfa81qU0fFl+Suk7U8NaOxIDdI1oBGLeQJqRZi/oxNIuhCLqsBmOwg==}
+
+  vue3-google-signin@2.0.1:
+    resolution: {integrity: sha512-vZTlVrG56JERtqQ+6YI8e92wqfhAMDyNONCsLgKKXxzCNCWEfSkZcAvz7COm9V4bvzmGsebZ8KC3ljol2qsIcg==}
+    peerDependencies:
+      vue: ^3
 
   vue@3.5.10:
     resolution: {integrity: sha512-Vy2kmJwHPlouC/tSnIgXVg03SG+9wSqT1xu1Vehc+ChsXsRd7jLkKgMltVEFOzUdBr3uFwBCG+41LJtfAcBRng==}
@@ -7709,6 +7724,18 @@ snapshots:
 
   nuxi@3.14.0: {}
 
+  nuxt-vue3-google-signin@0.0.11(magicast@0.3.5)(rollup@4.23.0)(vue@3.5.10(typescript@5.6.2))(webpack-sources@3.2.3):
+    dependencies:
+      '@nuxt/kit': 3.13.2(magicast@0.3.5)(rollup@4.23.0)(webpack-sources@3.2.3)
+      unimport: 3.13.1(rollup@4.23.0)(webpack-sources@3.2.3)
+      vue3-google-signin: 2.0.1(vue@3.5.10(typescript@5.6.2))
+    transitivePeerDependencies:
+      - magicast
+      - rollup
+      - supports-color
+      - vue
+      - webpack-sources
+
   nuxt@3.13.2(@parcel/watcher@2.4.1)(@types/node@22.7.4)(eslint@9.11.1(jiti@2.1.0))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.23.0)(terser@5.34.1)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(webpack-sources@3.2.3):
     dependencies:
       '@nuxt/devalue': 2.0.2
@@ -8983,6 +9010,10 @@ snapshots:
       vue: 3.5.10(typescript@5.6.2)
 
   vue-sonner@1.3.0: {}
+
+  vue3-google-signin@2.0.1(vue@3.5.10(typescript@5.6.2)):
+    dependencies:
+      vue: 3.5.10(typescript@5.6.2)
 
   vue@3.5.10(typescript@5.6.2):
     dependencies:

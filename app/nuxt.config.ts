@@ -15,7 +15,11 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'vue-sonner/nuxt',
+    'nuxt-vue3-google-signin',
   ],
+  googleSignIn: {
+    clientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID || '',
+  },
 
   // https://nuxt.com/docs/guide/going-further/runtime-config
   runtimeConfig: {

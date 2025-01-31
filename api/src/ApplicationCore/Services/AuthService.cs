@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Homemap.ApplicationCore.Interfaces.Repositories;
+using Google.Apis.Auth;
+using Microsoft.Extensions.Options;
 
 namespace Homemap.ApplicationCore.Services;
 
@@ -16,15 +18,18 @@ public class AuthService : IAuthService
     private readonly IConfiguration _configuration;
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly GoogleAuthSettings _googleSettings;
 
     public AuthService(
         IConfiguration configuration,
         IUserRepository userRepository,
-        IPasswordHasher<User> passwordHasher)
+        IPasswordHasher<User> passwordHasher,
+        IOptions<GoogleAuthSettings> googleSettings)
     {
         _configuration = configuration;
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _googleSettings = googleSettings.Value;
     }
 
     public async Task<(string accessToken, string refreshToken)> GenerateTokensAsync(User user)
@@ -96,5 +101,54 @@ public class AuthService : IAuthService
 
         var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
         return result == PasswordVerificationResult.Success ? user : null;
+    }
+
+    public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string idToken)
+    {
+        var settings = new GoogleJsonWebSignature.ValidationSettings
+        {
+            Audience = new List<string> { _googleSettings.ClientId }
+        };
+
+        try
+        {
+            return await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+        }
+        catch (InvalidJwtException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<(User user, string message)> HandleGoogleUserAsync(GoogleJsonWebSignature.Payload payload)
+    {
+        var user = await _userRepository.GetByGoogleIdAsync(payload.Subject);
+
+        if (user == null)
+        {
+            // If not found by Google ID, try to find by email
+            user = await _userRepository.GetUserByEmailAsync(payload.Email);
+
+            if (user != null)
+            {
+                // User exists with email but no Google ID - link accounts
+                user.GoogleId = payload.Subject;
+                await _userRepository.UpdateUserAsync(user);
+                return (user, "Existing account linked with Google");
+            }
+
+            // No existing user - create new
+            user = new User
+            {
+                GoogleId = payload.Subject,
+                Email = payload.Email,
+                Name = payload.Name ?? payload.Email.Split('@')[0],
+                CreatedAt = DateTime.UtcNow
+            };
+            await _userRepository.AddAsync(user);
+            return (user, "New account created with Google");
+        }
+
+        return (user, "Existing Google account logged in");
     }
 }

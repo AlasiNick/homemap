@@ -103,5 +103,70 @@ namespace Homemap.WebAPI.Controllers
 
             Response.Cookies.Append("refresh_token", refreshToken, cookieOptions);
         }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Login request is missing.",
+                    errorCode = "INVALID_REQUEST"
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(request.IdToken))
+            {
+                return BadRequest(new
+                {
+                    message = "ID Token is required.",
+                    errorCode = "MISSING_TOKEN"
+                });
+            }
+
+            try
+            {
+                var payload = await _authService.VerifyGoogleToken(request.IdToken);
+
+                if (payload == null)
+                {
+                    return Unauthorized(new
+                    {
+                        message = "Invalid or expired Google token.",
+                        errorCode = "INVALID_TOKEN"
+                    });
+                }
+
+                var (user, message) = await _authService.HandleGoogleUserAsync(payload);
+                var (accessToken, refreshToken) = await _authService.GenerateTokensAsync(user);
+
+                SetRefreshTokenCookie(refreshToken);
+
+                Response.Cookies.Append("access_token", accessToken, new CookieOptions
+                {
+                    HttpOnly = false,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax
+                });
+
+                return Ok(new
+                {
+                    message,
+                    accessToken,
+                    refreshToken,
+                    user = new { user.Id, user.Email, user.Name }
+                });
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred during login.",
+                    errorCode = "LOGIN_ERROR"
+                });
+            }
+        }
     }
 }

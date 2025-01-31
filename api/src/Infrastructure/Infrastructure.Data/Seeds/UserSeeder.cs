@@ -32,7 +32,19 @@ namespace Homemap.Infrastructure.Data.Seeds
 
             user.PasswordHash = _passwordHasher.HashPassword(user, "admin");
 
+
+            var user1 = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "nikita.matrossov@gmail.com",
+                Name = "Nikita User",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            user1.PasswordHash = _passwordHasher.HashPassword(user, "test1212");
+
             await _context.Users.AddAsync(user);
+            await _context.Users.AddAsync(user1);
             await _context.SaveChangesAsync();
         }
     }

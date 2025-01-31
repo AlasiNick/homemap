@@ -1,4 +1,11 @@
 <script setup lang="ts">
+// import { onMounted } from 'vue'
+// import { useAuthStore } from '@/stores/auth'  // Make sure to import the store
+
+// const authStore = useAuthStore()
+// onMounted(() => {
+//   authStore.initializeFromStorage()
+// })
 </script>
 
 <template>

@@ -8,4 +8,5 @@ public class User
     public string Name { get; set; }
     public DateTime CreatedAt { get; set; }
     public virtual List<UserSession>? Sessions { get; set; }
+    public string? GoogleId { get; set; }
 }

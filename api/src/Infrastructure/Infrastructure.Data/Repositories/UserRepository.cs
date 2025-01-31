@@ -45,5 +45,36 @@ namespace Homemap.Infrastructure.Data.Repositories
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<User> GetByGoogleIdAsync(string googleId)
+        {
+            return await _context.Users.SingleOrDefaultAsync(u => u.GoogleId == googleId);
+        }
+
+        public async Task AddAsync(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email, bool throwIfNotFound = false)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (throwIfNotFound && user == null)
+            {
+                throw new KeyNotFoundException($"User with email {email} not found.");
+            }
+
+            return user;
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

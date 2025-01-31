@@ -1,4 +1,5 @@
-﻿using Homemap.ApplicationCore.Models.Auth;
+﻿using Google.Apis.Auth;
+using Homemap.ApplicationCore.Models.Auth;
 
 
 namespace Homemap.ApplicationCore.Interfaces.Services;
@@ -9,4 +10,6 @@ public interface IAuthService
     string GenerateAccessTokenAsync(User user);
     Task<bool> ValidateRefreshTokenAsync(string refreshToken);
     Task<User> ValidateCredentialsAsync(string email, string password);
+    Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string idToken);
+    Task<(User user, string message)> HandleGoogleUserAsync(GoogleJsonWebSignature.Payload payload);
 }
