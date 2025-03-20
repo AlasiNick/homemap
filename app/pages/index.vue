@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
+
+definePageMeta({
+  middleware: ['check-session']
+})
+
+
 </script>
 
 <template>

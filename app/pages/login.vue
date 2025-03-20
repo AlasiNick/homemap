@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { z } from 'zod'
-import { GoogleSignInButton, type CredentialResponse, } from 'vue3-google-signin';
 
-// definePageMeta({
-//   middleware: ['check-session'], //TODO: Add middleware to redirect to home if user is already logged in
-// })
+definePageMeta({
+  middleware: ['check-session'],
+})
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Password is required'),
+  password: z.string().min(0, 'Invalid password'),
 })
 
 type Schema = z.infer<typeof schema>
@@ -22,7 +21,6 @@ const state = reactive<Schema>({
 const errors = reactive<{ [key in keyof Schema]?: string }>({})
 const isLoading = ref(false)
 const loginError = ref('')
-const user = ref(null)
 
 async function onSubmit(event: Event) {
   event.preventDefault()
@@ -41,7 +39,7 @@ async function onSubmit(event: Event) {
 
   try {
     isLoading.value = true
-    const response = await fetch('http://localhost:7185/api/Auth/login', {
+    const response = await fetch('http://localhost:5155/api/Auth/login', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -51,28 +49,24 @@ async function onSubmit(event: Event) {
     })
 
     if (!response.ok) {
-      // if (response.status === 401) {
-      //   loginError.value = 'Invalid email or password'
-      // }
-      const errorData = await response.json()
-      loginError.value = errorData.message || 'Login failed. Please try again.'
+      if (response.status === 401) {
+        loginError.value = 'Invalid email or password'
+      }
+      else {
+        loginError.value = 'Login failed. Please try again.'
+      }
       return
     }
 
     const responseData = await response.json()
 
-    console.log('Login successful:', responseData)
-
-    const authStore = useAuthStore()
-
     localStorage.setItem('user', JSON.stringify(responseData.user))
     localStorage.setItem('accessToken', responseData.accessToken)
-    authStore.setUser(responseData.user)
-    authStore.setAccessToken(responseData.accessToken)
 
-    user.value = responseData.user
+    useAuthStore().setUser(responseData.user)
+    useAuthStore().setAccessToken(responseData.accessToken)
 
-    window.location.href = '/' //navigateTo('/') 
+    navigateTo('/')
   }
   catch (error) {
     loginError.value = 'An error occurred. Please try again later.'
@@ -82,39 +76,6 @@ async function onSubmit(event: Event) {
     isLoading.value = false
   }
 }
-
-const handleLoginSuccess = async (response: CredentialResponse) => {
-  const { credential } = response;
-  console.log("Access Token", credential);
-
-  if (credential) {
-    try {
-      const user = await useFetch("http://localhost:5155/api/Auth/google-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ idToken: credential }), 
-      });
-      await navigateTo({ path: '/' })
-      console.log("User", user);
-    } catch (error) {
-      console.error("Login error", error);
-    }
-  }
-};
-const handleLoginError = (error: any) => {
-  // Specific Google Sign-In error handling
-  console.error("Google Sign-In failed", error);
-  
-  if (error.type === 'popup_blocked') {
-    alert("Popup was blocked. Please enable popups and try again.");
-  } else if (error.type === 'network_error') {
-    alert("Network error. Please check your internet connection.");
-  } else {
-    alert("Google Sign-In failed. Please try again.");
-  }
-};
 </script>
 
 <template>
@@ -181,9 +142,4 @@ const handleLoginError = (error: any) => {
       {{ loginError }}
     </p>
   </form>
-
-  <GoogleSignInButton
-    @success="handleLoginSuccess"
-    @error="handleLoginError"
-  ></GoogleSignInButton>
 </template>

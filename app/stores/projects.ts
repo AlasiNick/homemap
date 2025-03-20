@@ -6,7 +6,8 @@ import { useProjectService } from '~/services/project'
 
 export const useProjectsStore = defineStore('projects', () => {
   const route = useRoute()
-  const projectService = useProjectService()
+  const store = useAuthStore();
+  const projectService = useProjectService(store.accessToken!)
 
   const projects = ref<Project[]>([])
 

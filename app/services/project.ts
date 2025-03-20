@@ -2,13 +2,16 @@ import { z } from 'zod'
 import { deviceLogSchema } from '~/domain/device-log'
 import { updateProjectSchema, projectSchema, type Project, createProjectSchema } from '~/domain/project'
 
-export const useProjectService = () => {
+export const useProjectService = (aT: string) => {
   const config = useRuntimeConfig()
   const baseUrl = `${config.public.apiBaseUrl}/projects`
 
   const repository = createProjectRepository(
     $fetch.create({
       baseURL: baseUrl,
+      headers:{
+        'Authorization': `Bearer ${aT}`
+      }
     }),
   )
 

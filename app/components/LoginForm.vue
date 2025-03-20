@@ -105,6 +105,11 @@ async function onSubmit(event: Event) {
     const responseData = await response.json()
     localStorage.setItem('user', JSON.stringify(responseData.user))
     localStorage.setItem('accessToken', responseData.accessToken)
+
+    useAuthStore().setUser(responseData.user)
+    useAuthStore().setAccessToken(responseData.accessToken)
+
+    
     navigateTo('/')
   } catch (error) {
     loginError.value = 'An error occurred. Please try again later.'

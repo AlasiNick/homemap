@@ -126,6 +126,11 @@ async function onSubmit(event: Event) {
     localStorage.setItem('refreshToken', responseData.refreshToken)
     user.value = responseData.user
     window.location.href = '/'
+
+    useAuthStore().setUser(responseData.user)
+    useAuthStore().setAccessToken(responseData.accessToken)
+
+    
   } catch (error) {
     signupError.value = 'An error occurred. Please try again later.'
     console.error('Signup error:', error)

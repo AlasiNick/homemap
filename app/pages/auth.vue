@@ -39,9 +39,5 @@ import { ref } from 'vue'
 import LoginForm from '../components/LoginForm.vue'
 import SignupForm from '../components/SignupForm.vue'
 
-definePageMeta({
-  middleware: ['check-session']
-})
-
 const activeTab = ref('login')
 </script>
