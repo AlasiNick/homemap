@@ -1,5 +1,20 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '~/stores/auth'
+import { computed } from 'vue'
 import { NuxtLink } from '#components'
+
+const authStore = useAuthStore()
+const { user } = storeToRefs(authStore)
+
+const initials = computed(() => {
+  return user.value?.name
+    ?.split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2) || '??'
+})
 </script>
 
 <template>
@@ -12,7 +27,7 @@ import { NuxtLink } from '#components'
             class="rounded-full p-1 active:(bg-zinc-950/10 shadow-inner) hover:bg-zinc-950/5"
           >
             <div class="size-8 inline-flex items-center justify-center border border-zinc-950/10 rounded-full bg-zinc-50 text-zinc-600 font-medium uppercase sm:(size-7 text-sm)">
-              <span>PM</span>
+              <span>{{ initials }}</span>
             </div>
           </button>
         </slot>

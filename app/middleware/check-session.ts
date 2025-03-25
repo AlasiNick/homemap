@@ -4,21 +4,21 @@
 export default defineNuxtRouteMiddleware(async (to) => {
     if (!import.meta.client) {
       const sessionValid = await validateSessionOnServer()
-      if (!sessionValid && to.path !== '/login') {
-        return navigateTo('/login')
+      if (!sessionValid && to.path !== '/auth') {
+        return navigateTo('/auth')
       }
     }
   
-    if (import.meta.client) {
-      const accessToken = localStorage.getItem('accessToken')
-      if (!accessToken && to.path !== '/login') {
-        return navigateTo('/login')
-      }
-      if (accessToken && to.path === '/login') {
-        return navigateTo('/')
-      }
-    }
-  })
+    // if (import.meta.client) {
+    //   const accessToken = localStorage.getItem('accessToken')
+    //   if (!accessToken && to.path !== '/login') {
+    //     return navigateTo('/login')
+    //   }
+    //   if (accessToken && to.path === '/login') {
+    //     return navigateTo('/')
+    //   }    it has to be useless
+    // }
+  }) 
   
   async function validateSessionOnServer() {
     try {

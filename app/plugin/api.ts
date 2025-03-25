@@ -34,7 +34,7 @@ export default defineNuxtPlugin(async () => {
         }
         catch (refreshError) {
           console.error('Error refreshing token', refreshError)
-          await navigateTo('/login') // Redirect to login if refresh fails
+          await navigateTo('/auth') // Redirect to login if refresh fails
         }
       }
     },
