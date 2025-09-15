@@ -6,7 +6,7 @@ export const useReceiverService = () => {
   const config = useRuntimeConfig()
   const repository = createReceiverRepository(
     $fetch.create({
-      baseURL: `${config.public.apiBaseUrl}/receivers`,
+      baseURL: `${config.public.apiBaseUrl}/api/receivers`,
     }),
   )
 

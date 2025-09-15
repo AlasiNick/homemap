@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>$(CompanyArtifact).$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>$(CompanyArtifact).$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <UserSecretsId>a34dfe40-efdb-45d9-9f90-3980f3407c26</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

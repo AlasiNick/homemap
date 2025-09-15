@@ -16,6 +16,7 @@ namespace Homemap.ApplicationCore.Services
         private readonly IMapper _mapper;
 
         private readonly ICrudRepository<Project> _projectRepository;
+        private readonly IProjectRepository _projectQueryRepository;
 
         private readonly IDeviceRepository _deviceRepository;
 
@@ -25,12 +26,14 @@ namespace Homemap.ApplicationCore.Services
         (
             IMapper mapper,
             ICrudRepository<Project> projectRepository,
+            IProjectRepository projectQueryRepository,
             IDeviceRepository deviceRepository,
             IMessagingServiceFactory messagingServiceFactory
         ) : base(mapper, projectRepository)
         {
             _mapper = mapper;
             _projectRepository = projectRepository;
+            _projectQueryRepository = projectQueryRepository;
             _deviceRepository = deviceRepository;
             _messagingServiceFactory = messagingServiceFactory;
         }
@@ -68,11 +71,21 @@ namespace Homemap.ApplicationCore.Services
             }
         }
 
-        // public async Task<IReadOnlyList<ProjectDto>> GetAllByUserIdAsync(Guid userId)
-        // {
-        //     var allProjects = await _projectRepository.FindWhereAsync(p => p.UserId.Equals(userId));
+        public async Task<IReadOnlyList<ProjectDto>> GetAllByUserIdAsync(Guid userId)
+        {
+            var allProjects = await _projectQueryRepository.FindAllByUserIdAsync(userId);
+            return _mapper.Map<IReadOnlyList<ProjectDto>>(allProjects);
+        }
 
-        //     return _mapper.Map<IReadOnlyList<ProjectDto>>(allProjects);
-        // }
+        public async Task<ProjectDto> CreateForUserAsync(Guid userId, ProjectDto dto)
+        {
+            var entity = _mapper.Map<Project>(dto);
+            entity.UserId = userId;
+
+            await _projectRepository.AddAsync(entity);
+            await _projectRepository.SaveAsync();
+
+            return _mapper.Map<ProjectDto>(entity);
+        }
     }
 }

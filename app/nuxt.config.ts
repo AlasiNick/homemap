@@ -24,7 +24,8 @@ export default defineNuxtConfig({
   // https://nuxt.com/docs/guide/going-further/runtime-config
   runtimeConfig: {
     public: {
-      apiBaseUrl: 'https://localhost:7185/api',
+      // Base URL without "/api"; the app's API plugin appends "/api"
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:5155',
     },
   },
 

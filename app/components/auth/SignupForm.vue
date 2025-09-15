@@ -90,7 +90,7 @@ const isLoading = ref(false)
 const signupError = ref('')
 
 async function onSubmit() {
-  Object.keys(errors).forEach(key => delete errors[key])
+  Object.keys(errors).forEach(key => errors[key] = '')
   signupError.value = ''
 
   const result = signupSchema.safeParse(state)
@@ -103,8 +103,9 @@ async function onSubmit() {
 
   try {
     isLoading.value = true
+    const baseURL = useRuntimeConfig().public.apiBaseUrl
     const responseData = await handleApiRequest(
-      'http://localhost:5155/api/Register/register',
+      `${baseURL}/api/Register/register`,
       'POST',
       state,
       'Signup failed',

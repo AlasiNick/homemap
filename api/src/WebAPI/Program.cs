@@ -26,7 +26,12 @@ builder.Services
     .AddCors(opts => opts.AddPolicy(devCorsPolicy, policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000", "http://localhost:3080")
+            .WithOrigins(
+                "http://localhost:3000",
+                "http://localhost:3080",
+                "https://localhost:3000",
+                "https://localhost:3080"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -57,10 +62,10 @@ if (app.Environment.IsDevelopment())
 
     new List<ISeeder>
     {
+        new UserSeeder(context, new PasswordHasher<User>()),
         new ProjectSeeder(context),
         new ReceiverSeeder(context),
-        new DeviceSeeder(context),
-        new UserSeeder(context, new PasswordHasher<User>())
+        new DeviceSeeder(context)
     }.ForEach(async seeder => await seeder.SeedAsync());
 
     // enable cors

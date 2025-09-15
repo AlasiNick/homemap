@@ -37,12 +37,11 @@ namespace Homemap.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IReadOnlyList<ProjectDto>>> GetAll()
         {
-            return Ok(await _service.GetAllAsync());
-            // var user = HttpContext.Items["User"] as User;
-            // if (user == null)
-            //     return Unauthorized();
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
 
-            // return Ok(await _service.GetAllByUserIdAsync(user.Id));
+            return Ok(await _service.GetAllByUserIdAsync(userId));
         }
 
         [HttpGet("{id}")]
@@ -96,9 +95,13 @@ namespace Homemap.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            dto = await _service.CreateAsync(dto);
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
 
-            return CreatedAtAction(nameof(Create), new { dto.Id }, dto);
+            var created = await _service.CreateForUserAsync(userId, dto);
+
+            return CreatedAtAction(nameof(Create), new { created.Id }, created);
         }
 
         [HttpPut("{id}")]

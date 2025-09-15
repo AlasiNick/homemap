@@ -6,7 +6,7 @@ export const useDeviceService = () => {
   const config = useRuntimeConfig()
   const repository = createDeviceRepository(
     $fetch.create({
-      baseURL: `${config.public.apiBaseUrl}/devices`,
+      baseURL: `${config.public.apiBaseUrl}/api/devices`,
     }),
   )
 
