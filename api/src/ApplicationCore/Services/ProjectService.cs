@@ -67,5 +67,12 @@ namespace Homemap.ApplicationCore.Services
                 };
             }
         }
+
+        // public async Task<IReadOnlyList<ProjectDto>> GetAllByUserIdAsync(Guid userId)
+        // {
+        //     var allProjects = await _projectRepository.FindWhereAsync(p => p.UserId.Equals(userId));
+
+        //     return _mapper.Map<IReadOnlyList<ProjectDto>>(allProjects);
+        // }
     }
 }

@@ -38,5 +38,6 @@ namespace Homemap.Infrastructure.Data.Repositories
         {
             _entities.Remove(entity);
         }
+        
     }
 }

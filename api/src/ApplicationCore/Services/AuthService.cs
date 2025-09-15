@@ -73,6 +73,38 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    public async Task<User?> ValidateAccessTokenAsync(string accessToken)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        try
+        {
+            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+            var validationParams = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["Jwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = _configuration["Jwt:Audience"],
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var principal = tokenHandler.ValidateToken(accessToken, validationParams, out _);
+
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+                return null;
+
+            return await _userRepository.GetUserByIdAsync(Guid.Parse(userId));
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private string GenerateRefreshToken()
     {
         var randomNumber = new byte[32];

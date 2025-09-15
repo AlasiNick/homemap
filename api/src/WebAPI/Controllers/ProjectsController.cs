@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net.Mime;
 using System.Text.Json;
+using Homemap.ApplicationCore.Models.Auth;
 
 namespace Homemap.WebAPI.Controllers
 {
@@ -30,11 +31,18 @@ namespace Homemap.WebAPI.Controllers
             _jsonSerializerOptions = jsonOptions.Value.JsonSerializerOptions;
         }
 
+        
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IReadOnlyList<ProjectDto>>> GetAll()
         {
             return Ok(await _service.GetAllAsync());
+            // var user = HttpContext.Items["User"] as User;
+            // if (user == null)
+            //     return Unauthorized();
+
+            // return Ok(await _service.GetAllByUserIdAsync(user.Id));
         }
 
         [HttpGet("{id}")]

@@ -1,4 +1,6 @@
-﻿namespace Homemap.ApplicationCore.Interfaces.Repositories
+﻿using System.Linq.Expressions;
+
+namespace Homemap.ApplicationCore.Interfaces.Repositories
 {
     public interface ICrudRepository<T> : IRepository where T : class
     {
@@ -11,5 +13,8 @@
         void Update(T entity);
 
         void Remove(T entity);
+
+        // Task<IReadOnlyList<T>> FindWhereAsync(Expression<Func<T, bool>> predicate);
+
     }
 }

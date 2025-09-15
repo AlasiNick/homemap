@@ -40,7 +40,7 @@ builder.Services
 
 var app = builder.Build();
 app.UseHttpsRedirection();
-app.UseMiddleware<TokenExtractionMiddleware>();
+// app.UseMiddleware<TokenExtractionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

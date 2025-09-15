@@ -9,5 +9,6 @@ namespace Homemap.Domain.Core
         public string Name { get; set; } = null!;
 
         public virtual ICollection<Receiver> Receivers { get; } = new List<Receiver>();
+
     }
 }

@@ -6,5 +6,6 @@ namespace Homemap.ApplicationCore.Interfaces.Services
     public interface IProjectService : IService<ProjectDto>
     {
         IAsyncEnumerable<ErrorOr<DeviceLogDto>> GetDeviceLogsByIdAsync(int id, CancellationToken cancellationToken);
+        // Task<IReadOnlyList<ProjectDto>> GetAllByUserIdAsync(Guid userId);
     }
 }

@@ -1,8 +1,9 @@
-﻿namespace Homemap.ApplicationCore.Models.Auth;
+﻿using Homemap.ApplicationCore.Models.Common;
 
-public class UserDto
+namespace Homemap.ApplicationCore.Models.Auth;
+
+public record UserDto : AuditableEntityDto
 {
-    public Guid Id { get; set; }
-    public string Email { get; set; }
-    public string Name { get; set; }
+    public required string Email { get; set; }
+    public required string Name { get; set; }
 }
