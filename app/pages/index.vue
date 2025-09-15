@@ -2,10 +2,8 @@
 import { NuxtLink } from '#components'
 
 definePageMeta({
-  middleware: ['check-session']
+  middleware: ['check-session'],
 })
-
-
 </script>
 
 <template>

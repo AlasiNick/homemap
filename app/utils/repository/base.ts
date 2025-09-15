@@ -2,6 +2,7 @@ import type { $Fetch } from 'nitropack'
 import type { Entity } from '~/domain/entity'
 
 // TODO: remove it later
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const sleep = () => new Promise((resolve) => {
   setTimeout(() => resolve(true), 3000)
 })

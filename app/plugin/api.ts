@@ -1,17 +1,17 @@
 import type { NitroFetchRequest } from 'nitropack'
 
 export default defineNuxtPlugin(async () => {
-    const config = useRuntimeConfig()
-    const api = $fetch.create({
-      baseURL: `${config.public.apiBaseUrl}/api/`,
-      onRequest({ options }) {
-        if (process.client) {
-          const accessToken = localStorage.getItem('accessToken')
-          if (accessToken) {
-            options.headers.set('Authorization', `Bearer ${accessToken}`)
-          }
+  const config = useRuntimeConfig()
+  const api = $fetch.create({
+    baseURL: `${config.public.apiBaseUrl}/api/`,
+    onRequest({ options }) {
+      if (import.meta.client) {
+        const accessToken = localStorage.getItem('accessToken')
+        if (accessToken) {
+          options.headers.set('Authorization', `Bearer ${accessToken}`)
         }
-      },
+      }
+    },
     async onResponseError({ response, options }) {
       if (response.status === 401) {
         try {

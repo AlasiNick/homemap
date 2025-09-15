@@ -28,7 +28,10 @@ const userEmail = computed(() => user.value?.email || 'No email')
           <UserMenu>
             <button class="group w-full flex items-center justify-between gap-2 rounded-lg p-2 active:(bg-zinc-950/10 shadow-inner) hover:bg-zinc-950/5">
               <div class="flex flex-1 items-center gap-3 overflow-x-hidden">
-                <UIAvatar :username="userInitialsName" size="lg" />
+                <UIAvatar
+                  :username="userInitialsName"
+                  size="lg"
+                />
                 <div class="min-w-0 flex-1 text-left">
                   <h4 class="truncate text-sm font-medium">
                     {{ userInitialsName }}

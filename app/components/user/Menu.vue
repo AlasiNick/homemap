@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { useAuthStore } from '~/stores/auth'
 import { computed } from 'vue'
+import { useAuthStore } from '~/stores/auth'
 import { NuxtLink } from '#components'
 
 const authStore = useAuthStore()

@@ -1,5 +1,8 @@
 <template>
-  <form @submit.prevent="onSubmit" class="space-y-6">
+  <form
+    class="space-y-6"
+    @submit.prevent="onSubmit"
+  >
     <BaseInputField
       v-model="state.email"
       name="email"
@@ -25,32 +28,53 @@
       variant="primary"
       :disabled="isLoading"
     >
-      <template v-if="isLoading" #leadingIcon>
-        <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      <template
+        v-if="isLoading"
+        #leadingIcon
+      >
+        <svg
+          class="h-5 w-5 animate-spin text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          />
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
         </svg>
       </template>
     </BaseButton>
 
     <div class="relative my-4">
       <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-gray-300"></div>
+        <div class="w-full border-t border-gray-300" />
       </div>
       <div class="relative flex justify-center text-sm">
-        <span class="px-2 bg-white text-gray-500">Or continue with</span>
+        <span class="bg-white px-2 text-gray-500">Or continue with</span>
       </div>
     </div>
 
     <div>
       <GoogleSignInButton
+        class="w-full"
         @success="handleGoogleSignIn"
         @error="handleGoogleSignInError"
-        class="w-full"
       />
     </div>
 
-    <p v-if="loginError" class="text-center text-sm text-red-600">
+    <p
+      v-if="loginError"
+      class="text-center text-sm text-red-600"
+    >
       {{ loginError }}
     </p>
   </form>
@@ -63,8 +87,7 @@ import { GoogleSignInButton, type CredentialResponse } from 'vue3-google-signin'
 import BaseInputField from '../common/Input.vue'
 import BaseButton from '../common/Button.vue'
 
-import { loginSchema } from '~/utils/authValidation'
-import { handleApiRequest, saveUserData } from '~/utils/authValidation'
+import { loginSchema, handleApiRequest, saveUserData } from '~/utils/authValidation'
 
 const state = reactive({
   email: '',
@@ -94,13 +117,15 @@ async function onSubmit() {
       'http://localhost:5155/api/Auth/login',
       'POST',
       state,
-      'Invalid email or password'
+      'Invalid email or password',
     )
     saveUserData(responseData)
     navigateTo('/')
-  } catch (error: any) {
+  }
+  catch (error: any) {
     loginError.value = error.message || 'Login failed. Please try again.'
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -114,14 +139,16 @@ const handleGoogleSignIn = async (response: CredentialResponse) => {
         'http://localhost:5155/api/Auth/google-login',
         'POST',
         { idToken: credential },
-        'Google Sign-In failed'
+        'Google Sign-In failed',
       )
       await addUser(responseData.user)
       saveUserData(responseData)
       navigateTo('/')
-    } catch (error: any) {
+    }
+    catch (error: any) {
       loginError.value = error.message || 'Google Sign-In failed'
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -137,7 +164,8 @@ async function addUser(userData: any) {
       registeredAt: new Date().toISOString(),
     })
     localStorage.setItem('registeredUsers', JSON.stringify(localUsers))
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error adding user locally:', error)
   }
 }
@@ -146,9 +174,11 @@ const handleGoogleSignInError = (error: any) => {
   console.error('Google Sign-In failed', error)
   if (error.type === 'popup_blocked') {
     loginError.value = 'Popup was blocked. Please enable popups and try again.'
-  } else if (error.type === 'network_error') {
+  }
+  else if (error.type === 'network_error') {
     loginError.value = 'Network error. Please check your internet connection.'
-  } else {
+  }
+  else {
     loginError.value = 'Google Sign-In failed. Please try again.'
   }
 }

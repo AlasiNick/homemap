@@ -9,9 +9,9 @@ export const useProjectService = (aT: string) => {
   const repository = createProjectRepository(
     $fetch.create({
       baseURL: baseUrl,
-      headers:{
-        'Authorization': `Bearer ${aT}`
-      }
+      headers: {
+        Authorization: `Bearer ${aT}`,
+      },
     }),
   )
 

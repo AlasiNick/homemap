@@ -6,13 +6,11 @@ definePageMeta({
   layout: false,
 })
 
-
 const activeTab = ref<'login' | 'signup'>('login')
-
 </script>
 
 <template>
-  <div class="grid h-screen content-center justify-items-center bg-gray-100 px-4 sm:px-6 lg:px-8">
+  <div class="grid h-screen content-center justify-items-center bg-gray-100 px-4 lg:px-8 sm:px-6">
     <!-- Headings -->
     <div class="max-w-2xl text-center">
       <div class="mx-auto w-fit text-3xl text-zinc-600 sm:text-4xl">
@@ -27,24 +25,24 @@ const activeTab = ref<'login' | 'signup'>('login')
     </div>
 
     <!-- Auth Card -->
-    <div class="mt-8 w-full max-w-md bg-white shadow-xl rounded-xl overflow-hidden">
+    <div class="mt-8 max-w-md w-full overflow-hidden rounded-xl bg-white shadow-xl">
       <!-- Tab Navigation -->
       <div class="flex border-b border-gray-200">
-        <button 
-          @click="activeTab = 'login'"
+        <button
           class="w-1/2 py-4 text-center font-semibold transition-colors duration-300"
-          :class="activeTab === 'login' 
-            ? 'bg-blue-50 text-blue-600 border-b-2 border-blue-500' 
+          :class="activeTab === 'login'
+            ? 'bg-blue-50 text-blue-600 border-b-2 border-blue-500'
             : 'text-gray-500 hover:bg-gray-50'"
+          @click="activeTab = 'login'"
         >
           Sign In
         </button>
-        <button 
-          @click="activeTab = 'signup'"
+        <button
           class="w-1/2 py-4 text-center font-semibold transition-colors duration-300"
-          :class="activeTab === 'signup' 
-            ? 'bg-blue-50 text-blue-600 border-b-2 border-blue-500' 
+          :class="activeTab === 'signup'
+            ? 'bg-blue-50 text-blue-600 border-b-2 border-blue-500'
             : 'text-gray-500 hover:bg-gray-50'"
+          @click="activeTab = 'signup'"
         >
           Sign Up
         </button>
