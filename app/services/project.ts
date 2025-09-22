@@ -4,8 +4,7 @@ import { updateProjectSchema, projectSchema, type Project, createProjectSchema }
 
 export const useProjectService = (aT: string) => {
   const config = useRuntimeConfig()
-  // Include /api prefix because we use a dedicated $fetch instance here
-  const baseUrl = `${config.public.apiBaseUrl}/api/Projects`
+  const baseUrl = `${config.public.apiBaseUrl}/projects`
 
   const repository = createProjectRepository(
     $fetch.create({

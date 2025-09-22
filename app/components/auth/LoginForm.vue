@@ -115,7 +115,7 @@ async function onSubmit() {
     isLoading.value = true
     const baseURL = useRuntimeConfig().public.apiBaseUrl
     const responseData = await handleApiRequest(
-      `${baseURL}/api/Auth/login`,
+      `${baseURL}/Auth/login`,
       'POST',
       state,
       'Invalid email or password',
@@ -138,7 +138,7 @@ const handleGoogleSignIn = async (response: CredentialResponse) => {
       isLoading.value = true
       const baseURL = useRuntimeConfig().public.apiBaseUrl
       const responseData = await handleApiRequest(
-        `${baseURL}/api/Auth/google-login`,
+        `${baseURL}/Auth/google-login`,
         'POST',
         { idToken: credential },
         'Google Sign-In failed',

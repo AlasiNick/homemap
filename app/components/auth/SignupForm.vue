@@ -105,7 +105,7 @@ async function onSubmit() {
     isLoading.value = true
     const baseURL = useRuntimeConfig().public.apiBaseUrl
     const responseData = await handleApiRequest(
-      `${baseURL}/api/Register/register`,
+      `${baseURL}/Register/register`,
       'POST',
       state,
       'Signup failed',
