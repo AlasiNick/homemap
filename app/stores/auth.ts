@@ -5,7 +5,7 @@ export const useAuthStore = defineStore('auth', {
     user: null as { id: string, name: string, email: string } | null,
     accessToken: null as string | null,
     refreshHandle: null as number | null,
-    refreshing: false,
+    refreshPromise: null as Promise<void> | null,
   }),
 
   actions: {
@@ -60,39 +60,48 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async refreshSession() {
-      if (!import.meta.client || this.refreshing)
+      if (!import.meta.client)
         return
 
-      this.refreshing = true
-      try {
-        const config = useRuntimeConfig()
-        const response = await $fetch<{ accessToken: string }>(
-          `${config.public.apiBaseUrl}/Auth/refresh-token`,
-          {
-            method: 'POST',
-            credentials: 'include',
-          },
-        )
+      if (this.refreshPromise)
+        return this.refreshPromise
 
-        if (response?.accessToken) {
-          this.setAccessToken(response.accessToken)
+      const config = useRuntimeConfig()
+
+      const operation = (async () => {
+        try {
+          const response = await $fetch<{ accessToken: string }>(
+            `${config.public.apiBaseUrl}/Auth/refresh-token`,
+            {
+              method: 'POST',
+              credentials: 'include',
+            },
+          )
+
+          if (response?.accessToken) {
+            this.setAccessToken(response.accessToken)
+          }
+          else {
+            this.logout()
+          }
         }
-        else {
+        catch (error) {
           this.logout()
+          throw error
         }
-      }
-      catch (error) {
-        this.logout()
-        throw error
-      }
-      finally {
-        this.refreshing = false
-      }
+        finally {
+          this.refreshPromise = null
+        }
+      })()
+
+      this.refreshPromise = operation
+      return operation
     },
     logout() {
       this.clearRefreshTimer()
       this.clearUser()
       this.clearAccessToken()
+      this.refreshPromise = null
     },
   },
 })
