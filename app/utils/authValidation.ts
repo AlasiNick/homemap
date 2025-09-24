@@ -43,7 +43,6 @@ export async function handleApiRequest(
 
 export function saveUserData(userData: any) {
   localStorage.setItem('user', JSON.stringify(userData.user))
-  localStorage.setItem('accessToken', userData.accessToken)
 
   const authStore = useAuthStore()
   authStore.setUser(userData.user)

@@ -1,41 +1,46 @@
-import type { NitroFetchRequest } from 'nitropack'
+import { useAuthStore } from '~/stores/auth'
 
-export default defineNuxtPlugin(async () => {
+export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
+  const authStore = useAuthStore()
+
   const api = $fetch.create({
     baseURL: `${config.public.apiBaseUrl}/api/`,
+    credentials: 'include',
     onRequest({ options }) {
-      if (import.meta.client) {
-        const accessToken = localStorage.getItem('accessToken')
-        if (accessToken) {
-          options.headers.set('Authorization', `Bearer ${accessToken}`)
-        }
-      }
+      const token = authStore.accessToken
+      const headers = new Headers(options.headers as HeadersInit | undefined)
+
+      if (token)
+        headers.set('Authorization', `Bearer ${token}`)
+      else
+        headers.delete('Authorization')
+
+      options.headers = headers
     },
-    async onResponseError({ response, options }) {
-      if (response.status === 401) {
-        try {
-          const newAccessToken = await refreshAccessToken()
+    async onResponseError({ request, options, response }) {
+      if (response.status !== 401)
+        throw response._error ?? response
 
-          if (newAccessToken) {
-            localStorage.setItem('accessToken', newAccessToken)
-          }
-          else {
-            throw new Error('New access token is undefined')
-          }
+      try {
+        await authStore.refreshSession()
 
-          options.headers.set('Authorization', `Bearer ${newAccessToken}`)
+        if (!authStore.accessToken)
+          throw new Error('Unable to refresh session')
 
-          const requestOptions = {
-            ...options,
-          } as NitroFetchRequest
+        const headers = new Headers(options.headers as HeadersInit | undefined)
+        headers.set('Authorization', `Bearer ${authStore.accessToken}`)
+        options.headers = headers
 
-          return $fetch(requestOptions)
-        }
-        catch (refreshError) {
-          console.error('Error refreshing token', refreshError)
-          await navigateTo('/auth') // Redirect to login if refresh fails
-        }
+        return api(request, options)
+      }
+      catch (error) {
+        console.error('Error refreshing token', error)
+        authStore.logout()
+        if (import.meta.client)
+          await navigateTo('/auth')
+
+        throw error
       }
     },
   })
@@ -46,22 +51,3 @@ export default defineNuxtPlugin(async () => {
     },
   }
 })
-
-async function refreshAccessToken() {
-  const baseURL = useRuntimeConfig().public.apiBaseUrl
-
-  const { data, status } = await useFetch<{ accessToken: string }>(
-    `${baseURL}/api/Auth/refresh-token`,
-    {
-      method: 'POST',
-      credentials: 'include',
-    },
-  )
-
-  if (status.value === 'success') {
-    return data.value?.accessToken
-  }
-  else {
-    throw new Error('Token refresh failed')
-  }
-}

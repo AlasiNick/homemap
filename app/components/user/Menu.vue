@@ -15,6 +15,12 @@ const initials = computed(() => {
     .toUpperCase()
     .slice(0, 2) || '??'
 })
+
+const handleSignOut = async () => {
+  authStore.logout()
+
+  await navigateTo('/auth')
+}
 </script>
 
 <template>
@@ -60,11 +66,12 @@ const initials = computed(() => {
     <DropdownSeparator />
     <DropdownGroup>
       <DropdownItem
-        :as="NuxtLink"
-        to="/"
+        as="button"
         label="Sign out"
         icon="i-material-symbols-logout-rounded"
         variant="destructive"
+        type="button"
+        @click="handleSignOut"
       />
     </DropdownGroup>
   </Dropdown>

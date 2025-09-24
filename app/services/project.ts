@@ -1,16 +1,27 @@
 import { z } from 'zod'
 import { deviceLogSchema } from '~/domain/device-log'
+import { useAuthStore } from '~/stores/auth'
 import { updateProjectSchema, projectSchema, type Project, createProjectSchema } from '~/domain/project'
 
-export const useProjectService = (aT: string) => {
+export const useProjectService = () => {
   const config = useRuntimeConfig()
   const baseUrl = `${config.public.apiBaseUrl}/projects`
+  const authStore = useAuthStore()
 
   const repository = createProjectRepository(
     $fetch.create({
       baseURL: baseUrl,
-      headers: {
-        Authorization: `Bearer ${aT}`,
+      credentials: 'include',
+      onRequest({ options }) {
+        const headers = new Headers(options.headers as HeadersInit | undefined)
+        const token = authStore.accessToken
+
+        if (token)
+          headers.set('Authorization', `Bearer ${token}`)
+        else
+          headers.delete('Authorization')
+
+        options.headers = headers
       },
     }),
   )
